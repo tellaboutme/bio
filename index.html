@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>~ %</title>
+<meta name="description" content="~ %">
+<meta property="og:title" content="~ %">
+<meta property="og:description" content="Meliodas & Elizabeth">
+<meta property="og:image" content="assets/bg.jpg">
+<meta name="theme-color" content="#c6a6ff">
+<link rel="icon" href="assets/avatar.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --accent: #f2c46d;           /* Meliodas gold */
+  --accent-2: #ff8fb3;         /* Elizabeth pink */
+  --ink: #f4f1fa;
+  --ink-soft: rgba(244, 241, 250, 0.68);
+  --glass: rgba(16, 14, 24, 0.55);
+  --rim: rgba(255, 255, 255, 0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #07060b; }
+html, body { height: 100%; color: var(--ink); font-family: Inter, system-ui, sans-serif; overflow: hidden; }
+body { cursor: default; -webkit-font-smoothing: antialiased; }
+
+/* ── background ─────────────────────────────────────────────────────────── */
+#bg {
+  position: fixed; inset: -4%;
+  background: center / cover no-repeat;
+  filter: brightness(0.55) saturate(1.15) contrast(1.05);
+  transform: scale(1.02);
+  transition: transform 0.25s ease-out;
+  z-index: -2;
+}
+#bg::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 30%, rgba(7, 6, 11, 0.75) 100%),
+    linear-gradient(180deg, rgba(7, 6, 11, 0.15), rgba(7, 6, 11, 0.55));
+}
+#particles { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+
+/* ── click to enter ─────────────────────────────────────────────────────── */
+#enter {
+  position: fixed; inset: 0; z-index: 50;
+  display: grid; place-items: center;
+  background: rgba(5, 4, 9, 0.72);
+  backdrop-filter: blur(14px);
+  cursor: pointer;
+  transition: opacity 0.7s ease, visibility 0.7s;
+}
+#enter span {
+  font-size: clamp(18px, 2.4vw, 26px); font-weight: 600; letter-spacing: 0.02em;
+  animation: breathe 2.4s ease-in-out infinite;
+}
+#enter.gone { opacity: 0; visibility: hidden; }
+@keyframes breathe { 50% { opacity: 0.45; } }
+
+/* ── card ───────────────────────────────────────────────────────────────── */
+main {
+  position: fixed; inset: 0; display: grid; place-items: center; padding: 16px;
+  perspective: 900px;
+}
+@media (min-width: 1000px) {
+  main { justify-items: start; padding-left: 9vw; }
+  #bg { background-position: 70% center; }
+}
+.card {
+  width: min(520px, 100%);
+  padding: 34px 30px 26px;
+  border-radius: 26px;
+  background: var(--glass);
+  border: 1px solid var(--rim);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10), 0 30px 80px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(18px) saturate(1.3);
+  text-align: center;
+  opacity: 0; transform: translateY(18px) scale(0.98);
+  transition: opacity 0.9s ease 0.15s, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.15s;
+  transform-style: preserve-3d;
+}
+body.in .card { opacity: 1; transform: none; }
+
+.avatar-wrap { position: relative; width: 112px; height: 112px; margin: 0 auto 14px; }
+.avatar-wrap::before {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%;
+  background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent));
+  animation: spin 6s linear infinite; filter: blur(0.5px);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.avatar {
+  position: relative; width: 100%; height: 100%; border-radius: 50%;
+  object-fit: cover; border: 4px solid #0d0b14; background: #0d0b14;
+}
+.status-dot {
+  position: absolute; right: 6px; bottom: 6px; width: 22px; height: 22px; border-radius: 50%;
+  border: 4px solid #0d0b14; background: #747f8d;
+}
+.status-dot.online { background: #23a55a; } .status-dot.idle { background: #f0b232; }
+.status-dot.dnd { background: #f23f43; }
+
+h1 {
+  font-size: 30px; font-weight: 700; letter-spacing: -0.01em;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent));
+  background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: shine 5s linear infinite;
+  text-shadow: 0 0 24px rgba(242, 196, 109, 0.25);
+}
+@keyframes shine { to { background-position: 200% center; } }
+.handle { color: var(--ink-soft); font-size: 14px; margin-top: 2px; }
+.bio { min-height: 22px; margin: 14px 0 4px; font-size: 15px; color: var(--ink); }
+.bio .caret { display: inline-block; width: 1px; height: 1em; background: var(--ink); margin-left: 2px; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+.badges { display: flex; justify-content: center; gap: 8px; margin: 12px 0 4px; }
+.badge {
+  font-size: 12px; padding: 4px 10px; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07); border: 1px solid var(--rim); color: var(--ink-soft);
+}
+
+/* discord presence */
+.presence {
+  display: flex; align-items: center; gap: 12px; text-align: left;
+  margin: 18px 0 8px; padding: 12px 14px; border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05); border: 1px solid var(--rim);
+}
+.presence img { width: 48px; height: 48px; border-radius: 12px; object-fit: cover; background: rgba(255,255,255,0.06); }
+.presence .p-title { font-weight: 600; font-size: 14px; }
+.presence .p-sub { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+.presence.hidden { display: none; }
+
+/* links */
+.links { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
+.links a {
+  width: 42px; height: 42px; display: grid; place-items: center; border-radius: 12px;
+  color: var(--ink); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--rim);
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.links a:hover { transform: translateY(-3px); background: rgba(242, 196, 109, 0.18); color: var(--accent); }
+.links svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* music bar */
+.music {
+  display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 10px 12px;
+  border-radius: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--rim); text-align: left;
+}
+.music img { width: 40px; height: 40px; border-radius: 9px; object-fit: cover; background: rgba(255,255,255,0.06); }
+.music .m-meta { flex: 1; min-width: 0; }
+.music .m-title { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.music .m-bar { height: 3px; margin-top: 7px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); overflow: hidden; }
+.music .m-bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+.music button {
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--rim);
+  background: rgba(255, 255, 255, 0.08); color: var(--ink); cursor: pointer; display: grid; place-items: center;
+}
+.music button svg { width: 15px; height: 15px; fill: currentColor; }
+
+.views { margin-top: 14px; font-size: 12px; color: var(--ink-soft); display: inline-flex; gap: 6px; align-items: center; }
+
+#vol {
+  position: fixed; top: 18px; left: 18px; z-index: 40; width: 40px; height: 40px; border-radius: 12px;
+  display: grid; place-items: center; cursor: pointer; color: var(--ink-soft);
+  background: rgba(255, 255, 255, 0.06); border: 1px solid var(--rim); backdrop-filter: blur(10px);
+}
+#vol svg { width: 20px; height: 20px; fill: currentColor; }
+#sc { position: fixed; width: 1px; height: 1px; left: -9999px; top: -9999px; border: 0; }
+
+@media (max-width: 480px) { .card { padding: 28px 18px 20px; } h1 { font-size: 26px; } #bg { background-position: 78% center; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<canvas id="particles"></canvas>
+
+<div id="enter"><span>click to enter...</span></div>
+<button id="vol" aria-label="mute"></button>
+
+<main>
+  <section class="card" id="card">
+    <div class="avatar-wrap">
+      <img class="avatar" id="avatar" alt="">
+      <span class="status-dot" id="dot"></span>
+    </div>
+    <h1 id="name"></h1>
+    <div class="handle" id="handle"></div>
+    <p class="bio"><span id="bio"></span><span class="caret"></span></p>
+    <div class="badges" id="badges"></div>
+    <div class="presence hidden" id="presence">
+      <img id="p-img" alt="">
+      <div><div class="p-title" id="p-title"></div><div class="p-sub" id="p-sub"></div></div>
+    </div>
+    <div class="music" id="music">
+      <img id="m-art" alt="">
+      <div class="m-meta"><div class="m-title" id="m-title">…</div><div class="m-bar"><i id="m-prog"></i></div></div>
+      <button id="m-toggle" aria-label="play/pause"></button>
+    </div>
+    <nav class="links" id="links"></nav>
+    <div class="views" id="views"></div>
+  </section>
+</main>
+
+<iframe id="sc" allow="autoplay"></iframe>
+
+<script>
+/* ═══ НАСТРОЙКИ: всё меняется здесь ═══════════════════════════════════════ */
+const CONFIG = {
+  name: "~ %",
+  handle: "@bloodanywhere",
+  bio: [
+    "сам себе капитан",
+    "meliodas & elizabeth",
+    "папапапапапапапа ♪"
+  ],
+  badges: ["7 deadly sins", "♡ elizabeth"],
+  avatar: "assets/avatar.png",
+  background: "assets/bg.jpg",
+  // Трек на SoundCloud: вставь ссылку вида https://soundcloud.com/artist/track
+  soundcloud: "https://soundcloud.com/cemyanin/uroboros-play",
+  volume: 45,
+  // Discord: ID аккаунта (ПКМ по себе → Копировать ID). Живой статус через Lanyard:
+  // для него зайди на сервер discord.gg/lanyard один раз.
+  discordId: "1242841314144292916",
+  links: [
+    { icon: "discord", url: "https://discord.com/users/" },
+    { icon: "soundcloud", url: "https://soundcloud.com/cemyanin/uroboros-play" },
+  ],
+};
+/* ══════════════════════════════════════════════════════════════════════════ */
+
+const $ = id => document.getElementById(id);
+const ICONS = {
+  discord: '<svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.4 3l-.6 1.3a18.4 18.4 0 0 0-5.5 0L8.6 3a19.7 19.7 0 0 0-4.9 1.4C.6 9 -.3 13.6.1 18.1A19.9 19.9 0 0 0 6.2 21l1.3-2.1c-.7-.3-1.4-.6-2-1l.5-.4a14.2 14.2 0 0 0 12.1 0l.5.4c-.6.4-1.3.7-2 1L18 21a19.8 19.8 0 0 0 6-3c.5-5.2-.8-9.7-3.7-13.6ZM8.5 15.4c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Zm7 0c-1.2 0-2.2-1.1-2.2-2.4s1-2.4 2.2-2.4 2.2 1.1 2.2 2.4-1 2.4-2.2 2.4Z"/></svg>',
+  soundcloud: '<svg viewBox="0 0 24 24"><path d="M11.6 7.2v10.1h8.1a3.4 3.4 0 0 0 .6-6.7 5.6 5.6 0 0 0-8.7-3.4ZM10 8.4v8.9h.9V7.9l-.9.5Zm-1.8 1v7.9h.9V8.9l-.9.5Zm-1.8.6v7.3h.9v-7.5l-.9.2Zm-1.8.4v6.9h.9v-6.9h-.9Zm-1.8 1.2v5.7h.9v-5.8l-.9.1ZM1 13v4.2h.9v-4.3L1 13Z"/></svg>',
+  telegram: '<svg viewBox="0 0 24 24"><path d="M21.9 4.3 18.8 19c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2l-11 6.9-4.7-1.5c-1-.3-1-1 .2-1.5L20.6 3c.9-.3 1.6.2 1.3 1.3Z"/></svg>',
+  github: '<svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.6 22.4c.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6A11.5 11.5 0 0 0 12 .5Z"/></svg>',
+};
+const SVG_PLAY = '<svg viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></svg>';
+const SVG_PAUSE = '<svg viewBox="0 0 24 24"><path d="M6 4h4v16H6zm8 0h4v16h-4z"/></svg>';
+const SVG_VOL = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>';
+const SVG_MUTE = '<svg viewBox="0 0 24 24"><path d="M16.5 12A4.5 4.5 0 0 0 14 8v2.2l2.5 2.5V12zM19 12a7 7 0 0 1-.6 2.8l1.5 1.5A9 9 0 0 0 14 3.2v2.1A7 7 0 0 1 19 12zM4.3 3 3 4.3 7.7 9H3v6h4l5 5v-6.7l4.3 4.3c-.7.5-1.4.9-2.3 1.2v2.1a9 9 0 0 0 3.7-1.8L19.7 21 21 19.7l-9-9L4.3 3zM12 4 9.9 6.1 12 8.2V4z"/></svg>';
+
+/* static content */
+$("name").textContent = CONFIG.name;
+$("handle").textContent = CONFIG.handle;
+$("avatar").src = CONFIG.avatar;
+$("bg").style.backgroundImage = `url("${CONFIG.background}")`;
+$("badges").innerHTML = CONFIG.badges.map(b => `<span class="badge">${b}</span>`).join("");
+$("links").innerHTML = CONFIG.links.map(l =>
+  `<a href="${l.icon === "discord" && CONFIG.discordId ? l.url + CONFIG.discordId : l.url}" target="_blank" rel="noopener" aria-label="${l.icon}">${ICONS[l.icon] || ""}</a>`).join("");
+$("m-toggle").innerHTML = SVG_PLAY;
+$("vol").innerHTML = SVG_VOL;
+
+/* typing bio */
+(function type() {
+  const el = $("bio"); let line = 0, i = 0, del = false;
+  (function tick() {
+    const s = CONFIG.bio[line];
+    el.textContent = s.slice(0, i);
+    if (!del && i < s.length) { i++; return setTimeout(tick, 70); }
+    if (!del) { del = true; return setTimeout(tick, 1800); }
+    if (i > 0) { i--; return setTimeout(tick, 35); }
+    del = false; line = (line + 1) % CONFIG.bio.length; setTimeout(tick, 350);
+  })();
+})();
+
+/* local view counter (per browser) */
+try {
+  const n = (+localStorage.getItem("views") || 0) + 1; localStorage.setItem("views", n);
+  $("views").innerHTML = `👁 ${n}`;
+} catch (e) {}
+
+/* parallax tilt */
+const card = $("card"), bg = $("bg");
+addEventListener("pointermove", e => {
+  const x = e.clientX / innerWidth - 0.5, y = e.clientY / innerHeight - 0.5;
+  card.style.transform = `rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+  bg.style.transform = `scale(1.04) translate(${x * -14}px, ${y * -14}px)`;
+});
+
+/* soft floating particles (gold & pink) */
+(function particles() {
+  const c = $("particles"), g = c.getContext("2d"); let W, H, P = [];
+  const fit = () => { W = c.width = innerWidth * devicePixelRatio; H = c.height = innerHeight * devicePixelRatio; };
+  fit(); addEventListener("resize", fit);
+  for (let i = 0; i < 46; i++) P.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.8 + 0.6,
+    v: Math.random() * 0.00035 + 0.0001, a: Math.random() * 0.5 + 0.2, h: Math.random() < 0.5 ? "242,196,109" : "255,143,179" });
+  (function frame() {
+    g.clearRect(0, 0, W, H);
+    for (const p of P) {
+      p.y -= p.v; if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
+      g.beginPath(); g.arc(p.x * W, p.y * H, p.r * devicePixelRatio, 0, 7);
+      g.fillStyle = `rgba(${p.h},${p.a})`; g.shadowColor = `rgba(${p.h},0.8)`; g.shadowBlur = 8; g.fill();
+    }
+    requestAnimationFrame(frame);
+  })();
+})();
+
+/* SoundCloud (official Widget API) */
+let widget = null, playing = false, muted = false;
+function setupSC() {
+  if (!CONFIG.soundcloud) { $("m-title").textContent = "добавь ссылку на трек в CONFIG.soundcloud"; return; }
+  const f = $("sc");
+  f.src = "https://w.soundcloud.com/player/?url=" + encodeURIComponent(CONFIG.soundcloud) +
+    "&auto_play=false&hide_related=true&show_comments=false&show_user=true&visual=false";
+  const s = document.createElement("script"); s.src = "https://w.soundcloud.com/player/api.js";
+  s.onload = () => {
+    widget = SC.Widget(f);
+    widget.bind(SC.Widget.Events.READY, () => {
+      widget.setVolume(CONFIG.volume);
+      widget.getCurrentSound(snd => {
+        if (!snd) return;
+        $("m-title").textContent = snd.title;
+        $("m-art").src = (snd.artwork_url || snd.user?.avatar_url || "").replace("-large", "-t200x200");
+      });
+      widget.bind(SC.Widget.Events.PLAY_PROGRESS, e => { $("m-prog").style.width = (e.relativePosition * 100) + "%"; });
+      widget.bind(SC.Widget.Events.PLAY, () => { playing = true; $("m-toggle").innerHTML = SVG_PAUSE; });
+      widget.bind(SC.Widget.Events.PAUSE, () => { playing = false; $("m-toggle").innerHTML = SVG_PLAY; });
+      widget.bind(SC.Widget.Events.FINISH, () => widget.seekTo(0) || widget.play());   // loop
+      if (document.body.classList.contains("in")) widget.play();
+    });
+  };
+  document.head.appendChild(s);
+}
+setupSC();
+$("m-toggle").onclick = () => widget && (playing ? widget.pause() : widget.play());
+$("vol").onclick = () => {
+  muted = !muted; widget && widget.setVolume(muted ? 0 : CONFIG.volume);
+  $("vol").innerHTML = muted ? SVG_MUTE : SVG_VOL;
+};
+
+/* click to enter */
+$("enter").onclick = () => {
+  $("enter").classList.add("gone"); document.body.classList.add("in");
+  widget && widget.play();
+};
+
+if (location.hash === "#in") {   // preview / screenshot link: skip the intro animations
+  document.documentElement.style.setProperty("--no", "1");
+  const st = document.createElement("style"); st.textContent = "*{transition:none!important}"; document.head.appendChild(st);
+  $("enter").onclick();
+}
+
+/* Discord live presence (Lanyard) */
+function lanyard() {
+  if (!CONFIG.discordId) return;
+  fetch(`https://api.lanyard.rest/v1/users/${CONFIG.discordId}`).then(r => r.json()).then(({ data }) => {
+    if (!data) return;
+    $("dot").className = "status-dot " + data.discord_status;
+    const u = data.discord_user;
+    if (u && u.avatar && CONFIG.avatar === "assets/avatar.png") {
+      $("avatar").src = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.${u.avatar.startsWith("a_") ? "gif" : "png"}?size=256`;
+    }
+    const act = (data.activities || []).find(a => a.type !== 4);
+    const custom = (data.activities || []).find(a => a.type === 4);
+    if (custom && custom.state) CONFIG.bio[0] = custom.state;
+    const box = $("presence");
+    if (data.listening_to_spotify && data.spotify) {
+      box.classList.remove("hidden");
+      $("p-img").src = data.spotify.album_art_url; $("p-title").textContent = data.spotify.song;
+      $("p-sub").textContent = "Spotify · " + data.spotify.artist;
+    } else if (act) {
+      box.classList.remove("hidden");
+      const img = act.assets?.large_image;
+      $("p-img").src = img ? (img.startsWith("mp:") ? "https://media.discordapp.net/" + img.slice(3)
+        : `https://cdn.discordapp.com/app-assets/${act.application_id}/${img}.png`) : CONFIG.avatar;
+      $("p-title").textContent = act.name; $("p-sub").textContent = [act.details, act.state].filter(Boolean).join(" · ");
+    } else box.classList.add("hidden");
+  }).catch(() => {});
+}
+lanyard(); setInterval(lanyard, 30000);
+</script>
+</body>
+</html>
